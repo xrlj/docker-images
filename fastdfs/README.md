@@ -37,8 +37,22 @@ Of course, you can also make some modifications to these files, such as bast_pat
 Note that you need to specify the host IP when running the container with the parameter FASTDFS_IPADDR
 Here's a sample docker run instruction
 ```
-docker run -d -e FASTDFS_IPADDR=192.168.1.234 -p 8888:8888 -p 22122:22122 -p 23000:23000 -p 8011:80 --name test-fast 镜像id/镜像名称
+docker run --restart=always -d -e FASTDFS_IPADDR=192.168.1.234 -p 8888:8888 -p 22122:22122 -p 23000:23000 -v /server/dockers/fdfs:/home/dfs --name fdfs-server 镜像id/镜像名称
 ```
+
+测试是否成功：
+
+1.进入容器
+
+    [root@422898aa3ab7 /]# fdfs_upload_file /etc/fdfs/client.conf aa.jpg
+    group1/M00/00/00/rBEAC10HcNmAL-AKAAGkrow5eGk714.jpg
+
+2.打开浏览器访问：
+
+http://172.31.31.31:8888/group1/M00/00/00/rBEAC10HcNmAL-AKAAGkrow5eGk714.jpg
+
+如果能正常访问，则说明成功了。
+
 
 ## Epilogue
 Essentially, there is no difference between the local version and the network version.
