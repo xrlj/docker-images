@@ -1,0 +1,25 @@
+version: '3'
+services:
+  elasticsearch:
+    image: elasticsearch:7.3.1
+    environment:
+      discovery.type: single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+  logstash:
+    image: logstash:7.3.1
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    volumes:
+      # 挂载logstash配置文件
+      - ./config:/etc/logstash/conf.d
+      - /opt/build:/opt/build
+    ports:
+      - "5000:5000"
+      - "8088:8088"
+  kibana:
+    image: kibana:7.3.1
+    environment:
+      - ELASTICSEARCH_URL=http://120.79.2.30:9200
+    ports:
+      - "5601:5601"
