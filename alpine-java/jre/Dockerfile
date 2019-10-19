@@ -1,0 +1,47 @@
+###############################################################################
+# 
+#IMAGE:   Oracle-JDK-Image
+#VERSION: Alpine: 3.9
+#VERSION: JDK   :Oracle 11.0.5
+#
+###############################################################################
+FROM alpine:3.8
+ 
+###############################################################################
+#MAINTAINER
+###############################################################################
+MAINTAINER xinxiamu <932852117@qq.com>
+
+#更新Alpine的软件源为国内（清华大学）的站点，因为从默认官源拉取实在太慢了。。。
+#RUN echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.9/main/" > /etc/apk/repositories
+## 阿里
+RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
+
+COPY doc/jdk-11.0.5_linux-x64_bin.tar.gz /tmp
+COPY doc/glibc-2.30-r0.apk /tmp
+COPY doc/glibc-bin-2.30-r0.apk /tmp
+COPY doc/glibc-i18n-2.30-r0.apk /tmp
+
+ARG JAVA_VERSION=11.0.5
+ARG ARC_MODE=x64
+ARG DIR_JAVA_HOME=/opt/java
+ 
+RUN set -ex && \
+    apk -U upgrade && \
+    apk add libstdc++ ca-certificates --no-cache bash bash-doc bash-completion && \
+    cd /tmp && \
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    apk add /tmp/*.apk && \
+    ( /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true ) && \
+    echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
+    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
+    mkdir -p ${DIR_JAVA_HOME} && \
+    tar zxf jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz && \
+    jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output ${DIR_JAVA_HOME}/jre && \
+    sleep 2 && \
+    rm -rf /tmp/* /var/cache/apk/* && \
+    /bin/bash
+ 
+ENV JAVA_HOME ${DIR_JAVA_HOME}
+ENV PATH      $PATH:${DIR_JAVA_HOME}/jre/bin
+ENV LANG      C.UTF-8
