@@ -17,14 +17,15 @@ MAINTAINER xinxiamu <932852117@qq.com>
 ## 阿里
 RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
 
-COPY doc/jdk-11.0.5_linux-x64_bin.tar.gz /tmp
-COPY doc/glibc-2.30-r0.apk /tmp
-COPY doc/glibc-bin-2.30-r0.apk /tmp
-COPY doc/glibc-i18n-2.30-r0.apk /tmp
-
+ARG GLIBC_VERSION=2.30-r0
 ARG JAVA_VERSION=11.0.5
 ARG ARC_MODE=x64
 ARG DIR_JAVA_HOME=/opt/java
+
+COPY doc/jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz /tmp
+COPY doc/glibc-${GLIBC_VERSION}.apk /tmp
+COPY doc/glibc-bin-${GLIBC_VERSION}.apk /tmp
+COPY doc/glibc-i18n-${GLIBC_VERSION}.apk /tmp
  
 RUN set -ex && \
     apk -U upgrade && \
