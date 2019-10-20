@@ -33,6 +33,10 @@ RUN set -ex && \
     cd /tmp && \
     wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
     apk add /tmp/*.apk && \
+    wget "https://www.archlinux.org/packages/core/x86_64/zlib/download" -O /tmp/libz.tar.xz && \
+    mkdir -p /tmp/libz && \
+    tar -xf /tmp/libz.tar.xz -C /tmp/libz && \
+    cp /tmp/libz/usr/lib/libz.so.1.2.11 /usr/glibc-compat/lib && \
     ( /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true ) && \
     echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
     /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
