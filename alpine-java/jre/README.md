@@ -54,7 +54,13 @@ https://github.com/sgerrand/alpine-pkg-glibc/releases/
     
 ## java11生成jre模块
 
-    jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output jre            
+    jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output jre 
+    
+## 过程记录
+
+1.在Dockerfile中，使用COPY命令添加到镜像中，文件越大，制作出来的镜像越大，尽管最后都`rm -rf`掉,还是很大。所以，glibc-*.apk文件都改为直接从网络上拉取。
+
+2.jdk11无法直接通过网络下载，所以只能先下载好，但是jdk很大，所以先通过命令生成jre文件，再COPY进去。               
 
 ## 参考网址
 

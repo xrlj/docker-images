@@ -18,6 +18,7 @@ MAINTAINER xinxiamu <932852117@qq.com>
 RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
 
 COPY doc/jre-11.0.5.tar.gz /tmp
+## COPY进去的，会导致镜像很大，所以通过网络。
 #COPY doc/glibc-2.30-r0.apk /tmp
 #COPY doc/glibc-bin-2.30-r0.apk /tmp
 #COPY doc/glibc-i18n-2.30-r0.apk /tmp
