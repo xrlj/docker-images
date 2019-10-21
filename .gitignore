@@ -25,6 +25,7 @@ target/
 /.nb-gradle/
 
 /alpine-java/jre/doc/jdk-*
+/alpine-java/jdk/doc/jdk-*
 
 
 

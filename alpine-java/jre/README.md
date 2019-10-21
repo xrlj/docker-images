@@ -55,6 +55,8 @@ https://github.com/sgerrand/alpine-pkg-glibc/releases/
 ## java11生成jre模块
 
     jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output jre 
+
+_注：_这样生成的jre无法运行spring-boot项目。应该是缺少模块。暂时没找到更好生成服务器的jre方法。
     
 ## 过程记录
 
