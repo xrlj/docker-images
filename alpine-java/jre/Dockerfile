@@ -17,36 +17,38 @@ MAINTAINER xinxiamu <932852117@qq.com>
 ## 阿里
 RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
 
-COPY doc/jdk-11.0.5_linux-x64_bin.tar.gz /tmp
-COPY doc/glibc-2.30-r0.apk /tmp
-COPY doc/glibc-bin-2.30-r0.apk /tmp
-COPY doc/glibc-i18n-2.30-r0.apk /tmp
+COPY doc/jre-11.0.5.tar.gz /tmp
+#COPY doc/glibc-2.30-r0.apk /tmp
+#COPY doc/glibc-bin-2.30-r0.apk /tmp
+#COPY doc/glibc-i18n-2.30-r0.apk /tmp
 
+ARG GLIBC_DOWNLOAD_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}
 ARG GLIBC_VERSION=2.30-r0
 ARG JAVA_VERSION=11.0.5
 ARG ARC_MODE=x64
 ARG DIR_JAVA_HOME=/opt/java
 
 RUN set -ex && \
-    apk -U upgrade && \
-    apk add libstdc++ ca-certificates --no-cache bash bash-doc bash-completion && \
+    apk -U upgrade --update-cache && \
+    apk add --no-cache libstdc++ ca-certificates bash bash-doc bash-completion && \
     cd /tmp && \
     wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget ${GLIBC_DOWNLOAD_URL}/glibc-${GLIBC_VERSION}.apk && \
+    wget ${GLIBC_DOWNLOAD_URL}/glibc-bin-${GLIBC_VERSION}.apk && \
+    wget ${GLIBC_DOWNLOAD_URL}/glibc-i18n-${GLIBC_VERSION}.apk && \
     apk add /tmp/*.apk && \
+    ( /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true ) && \
+    echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
+    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
     wget "https://www.archlinux.org/packages/core/x86_64/zlib/download" -O /tmp/libz.tar.xz && \
     mkdir -p /tmp/libz && \
     tar -xf /tmp/libz.tar.xz -C /tmp/libz && \
     cp /tmp/libz/usr/lib/libz.so.1.2.11 /usr/glibc-compat/lib && \
-    ( /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true ) && \
-    echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
-    /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
-    cd /tmp && \
+    /usr/glibc-compat/sbin/ldconfig && \
     mkdir -p ${DIR_JAVA_HOME} && \
-    tar zxf jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz && \
-    jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output ${DIR_JAVA_HOME}/jre && \
+    tar zxf jre-${JAVA_VERSION}.tar.gz -C ${DIR_JAVA_HOME} && \
     sleep 2 && \
-    rm -rf /tmp/* /var/cache/apk/* && \
-    /bin/bash
+    rm -rf /tmp/* /var/cache/apk/*
  
 ENV JAVA_HOME ${DIR_JAVA_HOME}
 ENV PATH      $PATH:${DIR_JAVA_HOME}/jre/bin
