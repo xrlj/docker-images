@@ -10,9 +10,7 @@ https://github.com/sgerrand/alpine-pkg-glibc/releases/
 
 ## 测试
 
-    docker run -it --rm xinxiamu/jre-server:11
-    
-    java -version
+    docker run -it --rm xinxiamu/jre-server:11 java -version
     
 这里测试的时候，会报错，显示java运行环境出错误。
 
@@ -52,7 +50,11 @@ https://github.com/sgerrand/alpine-pkg-glibc/releases/
     /tmp/alpine-tools/jdk-11.0.5 # bin/java -version
     java version "11.0.5" 2019-10-15 LTS
     Java(TM) SE Runtime Environment 18.9 (build 11.0.5+10-LTS)
-    Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.5+10-LTS, mixed mode)          
+    Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.5+10-LTS, mixed mode)  
+    
+## java11生成jre模块
+
+    jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output jre            
 
 ## 参考网址
 
