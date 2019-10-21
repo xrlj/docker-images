@@ -5,7 +5,7 @@
 #VERSION: JDK   :Oracle 11.0.5
 #
 ###############################################################################
-FROM alpine:3.8
+FROM alpine:3.9
  
 ###############################################################################
 #MAINTAINER
@@ -17,16 +17,16 @@ MAINTAINER xinxiamu <932852117@qq.com>
 ## 阿里
 RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repositories
 
+COPY doc/jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz /tmp
+COPY doc/glibc-${GLIBC_VERSION}.apk /tmp
+COPY doc/glibc-bin-${GLIBC_VERSION}.apk /tmp
+COPY doc/glibc-i18n-${GLIBC_VERSION}.apk /tmp
+
 ARG GLIBC_VERSION=2.30-r0
 ARG JAVA_VERSION=11.0.5
 ARG ARC_MODE=x64
 ARG DIR_JAVA_HOME=/opt/java
 
-COPY doc/jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz /tmp
-COPY doc/glibc-${GLIBC_VERSION}.apk /tmp
-COPY doc/glibc-bin-${GLIBC_VERSION}.apk /tmp
-COPY doc/glibc-i18n-${GLIBC_VERSION}.apk /tmp
- 
 RUN set -ex && \
     apk -U upgrade && \
     apk add libstdc++ ca-certificates --no-cache bash bash-doc bash-completion && \
@@ -40,6 +40,7 @@ RUN set -ex && \
     ( /usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 C.UTF-8 || true ) && \
     echo "export LANG=C.UTF-8" > /etc/profile.d/locale.sh && \
     /usr/glibc-compat/sbin/ldconfig /lib /usr/glibc-compat/lib && \
+    cd /tmp && \
     mkdir -p ${DIR_JAVA_HOME} && \
     tar zxf jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz && \
     jdk-${JAVA_VERSION}/bin/jlink --module-path jmods --add-modules java.desktop --output ${DIR_JAVA_HOME}/jre && \
