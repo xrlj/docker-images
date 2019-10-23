@@ -50,8 +50,8 @@ RUN set -ex && \
     tar zxf jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz -C ${DIR_JAVA_HOME} && \
     sleep 2 && \
     rm -rf /tmp/* /var/cache/apk/* && \
-    mkdir /app && \
-    && /bin/bash
+    mkdir -p /app && \
+    /bin/bash
 
 ENV JAVA_HOME ${DIR_JAVA_HOME}/jdk-${JAVA_VERSION}
 ENV PATH      $PATH:${DIR_JAVA_HOME}/jdk-${JAVA_VERSION}/bin
