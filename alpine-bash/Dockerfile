@@ -9,5 +9,5 @@ RUN apk update \
         && apk add --no-cache bash \
         bash-doc \
         bash-completion \
-        && rm -rf /var/cache/apk/* \
-        && /bin/bash
+        && rm -rf /var/cache/apk/*
+CMD ["/bin/bash"]
