@@ -21,6 +21,8 @@ RUN echo "http://mirrors.aliyun.com/alpine/latest-stable/main/" > /etc/apk/repos
 ##改用网络下载方式，把jdk放到自己的文件服务器
 #COPY doc/jdk-11.0.5_linux-x64_bin.tar.gz /tmp
 
+COPY doc/passwd /tmp
+
 ARG JAVA_DOWLOAD_URL=http://39.108.191.220/jdk-11.0.5_linux-x64_bin.tar.gz
 ARG GLIBC_VERSION=2.30-r0
 ARG GLIBC_DOWNLOAD_URL=https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}
@@ -45,6 +47,8 @@ RUN set -ex && \
     tar -xf /tmp/libz.tar.xz -C /tmp/libz && \
     cp /tmp/libz/usr/lib/libz.so.1.2.11 /usr/glibc-compat/lib && \
     /usr/glibc-compat/sbin/ldconfig && \
+    rm -rf /etc/passwd  && \
+    cp /tmp/passwd /etc/ && \
     wget ${JAVA_DOWLOAD_URL} && \
     mkdir -p ${DIR_JAVA_HOME} && \
     tar zxf jdk-${JAVA_VERSION}_linux-${ARC_MODE}_bin.tar.gz -C ${DIR_JAVA_HOME} && \
