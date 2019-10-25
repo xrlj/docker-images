@@ -66,7 +66,22 @@ _注：_这样生成的jre无法运行spring-boot项目。应该是缺少模块�
 
 1.在Dockerfile中，使用COPY命令添加到镜像中，文件越大，制作出来的镜像越大，尽管最后都`rm -rf`掉,还是很大。所以，glibc-*.apk文件都改为直接从网络上拉取。
 
-2.jdk11无法直接通过网络下载，所以只能先下载好，但是jdk很大，所以先通过命令生成jre文件，再COPY进去。               
+2.jdk11无法直接通过网络下载，所以只能先下载好，但是jdk很大，所以先通过命令生成jre文件，再COPY进去。  
+
+## 容器启动后进入容器bash不可用问题
+
+参考下面第四个网址。       
+
+    vi /etc/passwd    
+    
+把
+
+    root:x:0:0:root:/root:/bin/ash 
+    
+改成：   
+
+    root:x:0:0:root:/root:/bin/bash
+          
 
 ## 参考网址
 
@@ -75,4 +90,6 @@ _注：_这样生成的jre无法运行spring-boot项目。应该是缺少模块�
 2.https://blog.csdn.net/qq_36335313/article/details/92428635
 
 3.https://github.com/sgerrand/alpine-pkg-glibc/issues/75
+
+4.https://www.cyberciti.biz/faq/alpine-linux-install-bash-using-apk-command/
 
