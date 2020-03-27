@@ -15,7 +15,7 @@ Dockerfile 所需要的一些配置文件
 
 
 ```
-docker run --name fdfs-server --restart=always -e FASTDFS_IPADDR=172.31.31.31 -p 8888:8888 -p 22122:22122 -p 23000:23000 -v /server/dockers/fdfs:/home/dfs -d xinxiamu/fdfs-server:0.1
+docker run --name fdfs-server --restart=always -e FASTDFS_IPADDR=172.31.31.31 -p 8888:8888 -p 22122:22122 -p 23000:23000 -v /server/dockers/fdfs:/home/dfs -d xinxiamu/fdfs-server:latest
 ```
 
 
